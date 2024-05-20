@@ -1,0 +1,118 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+ /* 09/04/2024 */
+ .wrap.ctm_main_wrap h1 {
+    font-size: 28px;
+    color: #000;
+    font-weight: 500;
+}
+.wrap.ctm_main_wrap p {
+    font-size: 16px;
+    color: #554d4d;
+    margin-bottom: 30px;
+}
+.ctm_form_table tr {
+    display: grid;
+}
+.ctm_form_table th {
+    padding: 20px 10px 0px 0;
+}
+.ctm_form_table td {   
+    padding: 15px 10px 0px 0px;
+}
+.ctm_form_table label {    
+    font-size: 15px;
+    color: #000;    
+}
+.ctm_main_wrap .button-primary {   
+    padding: 4px 30px;
+    font-weight: 500;
+    border-radius: 0;
+    font-size: 16px;
+}
+.ctm_form_table #get_qurio_api_key, .ctm_form_table #quick_overview {
+    width: 100%;
+    max-width: 420px;
+    padding: 8px 10px;
+}
+
+.ctm_form_table #get_qurio_api_key{
+    font-size: 16px;
+}
+.ctm_overview_main .button-primary {
+    background: #ed143ddb;
+    border: 1px solid;
+    padding: 8px 110px;
+}
+.ctm_overview_main .button-primary:hover {    
+    background: #ed143d;
+    border: 1px solid;
+}
+.ctm_form_overview  tr {   
+    margin-bottom: 20px;
+}
+.ctm_qurio_btn {
+    padding: 8px 12px;
+    border: 1px solid;
+    display: inline-block;
+    margin-top: 5px;
+    border-radius: 4px;
+}
+.ctm_form_overview .ctm_box_model {
+    width: 100%;
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 35px 30px;
+    max-width: 1000px;
+    margin-bottom: 20px;
+    display: flex;     
+}
+.ctm_box_type {
+    width: 50%;
+}
+.ctm_over_view_button {
+    text-align: center;
+}
+.border_box_left {
+    border-left: 1px solid #ddd;
+    padding-left: 25px;
+}
+.ctm_box_model h4 {
+    font-size: 18px;
+    color: #000;
+    margin: 0px 0px 20px 0px;
+    font-weight: 500;
+}
+.ctm_box_model h5 {
+    color: #000;
+    font-size: 24px;
+    margin: 0;
+}
+#qurio_shortcode_field {
+    padding: 5px 10px;
+    margin: 10px 0;
+    width: 190px;
+    background: #fff;
+    color: #f00;
+    font-weight: 600;
+    text-align: center;
+}
+#qurio_shortcode_copy {
+    padding: 4px 10px 6px;
+    margin-left: 5px;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+    border-color: #000;
+    font-weight: 600;
+}
+.qurio_widget_instructions li {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+.qurio_widget_instructions h2 {
+    font-size: 23px;
+}
