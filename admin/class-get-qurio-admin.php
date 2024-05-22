@@ -266,7 +266,7 @@ class Get_Qurio_Admin {
         ?>
         <div class="wrap ctm_main_wrap">
         <h1>Qurio Settings</h1>
-        <p>Copy the Authenticator key from Qurio's settings.</p>
+        <p>To get the Qurio API key, go to your Qurio account, click on the profile icon in the top right, and copy the API key from there.</p>
         <?php ?>
         <form method="post" action="<?php echo admin_url( 'options.php' ); ?>">
             <?php settings_fields( 'qurio_settings_group' ); ?>
@@ -291,14 +291,13 @@ class Get_Qurio_Admin {
         <div class="qurio_widget_instructions">
             <h2>Instructions:</h2>
             <div class="">
-                <p>There are 3 types of qurio widgets available to use in your WordPress website.</p>
+                <p>Qurio Engagements Widgets has 3 display options for your Wordpress website.</p>
                 <ol>
-                    <li><strong>Inline Widget: </strong>To use inline widget on the post where you assigned the campaign then just need to put the shortcode as mentioned below in post description on the place where needs to display the Qurion inline widget.<br>
+                    <li><strong>Inline. </strong>The inline widget will natively appear inside the article after the 2nd paragraph.You can set a custom widget position with the shortcode shown below. Just add it to the post where you would like to see the widget.<br>
                         <input type="text" readonly disabled id="qurio_shortcode_field" value="[qurio_embed_campaign]">
-                        <button type="button" id="qurio_shortcode_copy">Copy Shortcode</button>
-                    </li>
-                    <li><strong>Popup Widget: </strong>Popup widget auto apply on the post where campaign created. There is no need to use any shortcode to display popup widget.</li>
-                    <li><strong>Standalone Widget: </strong>For standalone widget you just need to copy the given link from your Qurio account and place it where do you want to display in WordPress post.</li>
+                        <button type="button" id="qurio_shortcode_copy">Copy Shortcode</button></li>
+                    <li><strong>Popup. </strong>Popup widgets show automatically on page load after a certain delay.To configure the delay, go to the Appearances page in your Qurio account.</li>
+                    <li><strong>Standalone. </strong>Every campaign has a unique Standalone URL.You can link it directly with your posts, emails, or social media.</li>
                 </ol>
             </div>
         </div>
@@ -479,15 +478,16 @@ class Get_Qurio_Admin {
             get_qurio_write_log('Payload = ');
             get_qurio_write_log($data);
 
-            get_qurio_write_log('$_POST = ');
-            get_qurio_write_log($_POST);
+       
+            //get_qurio_write_log('$_POST = ');
+            //get_qurio_write_log($_POST);
            
             $api_data = array();
             $auth = apache_request_headers();
             $site_url = get_site_url();       
 
-            get_qurio_write_log('Auth = ');
-            get_qurio_write_log($auth);
+            //get_qurio_write_log('Auth = ');
+            //get_qurio_write_log($auth);
             
             $api_key = $this->get_qurio_api_key(); 
             $computed_auth_key = sha1($api_key .''. $site_url);
@@ -498,10 +498,14 @@ class Get_Qurio_Admin {
             $post_id = absint($data['post_id']);
             $campaign_id = sanitize_text_field($data['campaign_id']);
             $qurio_connect_campaign_style = sanitize_text_field($data['style']);
+            $popupdelay = $data['appearance']['popupDelay'];
+            $serialized_data = maybe_serialize($data['appearance']);
             $msg = 'No post id found';
             if($post_id > 0){
                 update_post_meta($post_id, 'get_qurio_campaign_id', $campaign_id);
                 update_post_meta($post_id, 'qurio_connect_campaign_style', $qurio_connect_campaign_style);
+                update_post_meta($post_id, 'qurio_popup_delay_time', $popupdelay);
+                update_post_meta($post_id, 'qurio_campaign_appearance', $serialized_data);
                 $msg ='Campaign id saved';
             }
 
@@ -519,10 +523,10 @@ class Get_Qurio_Admin {
                 $response = new WP_REST_Response($api_data);
             }
 
-            get_qurio_write_log('api_data = ');
-            get_qurio_write_log($api_data);
-            get_qurio_write_log('Response = ');
-            get_qurio_write_log($response);
+           // get_qurio_write_log('api_data = ');
+           // get_qurio_write_log($api_data);
+            //get_qurio_write_log('Response = ');
+           // get_qurio_write_log($response);
 
             return $response;
         }
@@ -541,10 +545,10 @@ class Get_Qurio_Admin {
             );
 
             $response = $this->get_qurio_send_post_request($action);
-
+       
             get_qurio_write_log('action = ' . $action);
-            get_qurio_write_log('Campaign Response = ');
-            get_qurio_write_log($response);
+           get_qurio_write_log('Campaign Response = ');
+           get_qurio_write_log($response);
 
             $response_data = json_decode( $response , true);
 

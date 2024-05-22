@@ -16,7 +16,7 @@
  * Plugin Name:       Qurio
  * Plugin URI:        https://github.com/GetQurio/
  * Description:       With Qurio digital media can engage natively on their homepage with their audiences leveraging AI-powered surveys and engagement campaigns to boost trust, email signups, and revenue.
- * Version:           1.0.8
+ * Version:           1.0.9
  * Author:            AthensLive Media Solutions
  * Author URI:        https://getqurio.com//
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'GET_QURIO_VERSION', '1.0.8' );
+define( 'GET_QURIO_VERSION', '1.0.9' );
 define( 'GET_QURIO_DIRURL', plugin_dir_url( __FILE__ ) );
 define( 'GET_QURIO_DIRPATH', plugin_dir_path( __FILE__ ) );
 define( 'GET_QURIO_API_ROOT', 'https://main.d3jgd5ppxfn92f.amplifyapp.com/api' );
