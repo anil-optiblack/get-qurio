@@ -47,8 +47,7 @@ $this->plugin_name = $plugin_name;
 $this->version = $version;
 add_shortcode( 'qurio_embed_campaign', array($this,'qurio_embed_campaign_html' ));
 add_action('wp_footer' , array($this,'get_qurio_campaign_form'));
-//add_filter( 'the_content', array($this,'add_shortcode_after_second_paragraph_or_content') );
-//add_action('wp_footer' , array($this,'get_qurio_campaign_form_inline_style'));
+add_filter('the_content', array($this,'insert_qurio_campaign_form'));
 }
 /**
 * Register the stylesheets for the public-facing side of the site.
@@ -104,79 +103,61 @@ wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/get-quri
         $id = $atts['id'];
         $qurio_connect_campaign_id = get_post_meta( $id, 'get_qurio_campaign_id', true );
         $qurio_connect_campaign_style = get_post_meta( $id, 'qurio_connect_campaign_style', true );
+        
+        if($qurio_connect_campaign_style != 'inline'){
+            return '';
+        }
+
         if (get_post_type($id) == 'post' && !empty($qurio_connect_campaign_id)) {
         $preview_url = 'preview-wp';
-        if($qurio_connect_campaign_style == 'standalone') {
-        $preview_url = 'preview';
-        }
          $iframe_src = GET_QURIO_APP_URL . '/' . $preview_url . '/?campaignId=' . $qurio_connect_campaign_id;
          $output = "<div class='ctt_pop_content'>
         <iframe src=\"" . esc_url($iframe_src) . "\" width=\"600\" height=\"400\" frameborder=\"0\" style='width: 100%; Max-width: 100%;'></iframe>
         </div>
         <div class='custom_iframe_url'><div>";
-        // $output = "
-        // <div id='popup1' class='ctt_overlay'>
-        // <iframe src=\"" . esc_url($iframe_src) . "\" width=\"600\" height=\"400\" frameborder=\"0\"></iframe>
-        // <div>";
         }
+    
         return $output;
 }
 
 
 
-function add_shortcode_after_second_paragraph_or_content( $content ) {
-    // Check if it's a singular post and the condition is met
-	$qurio_connect_campaign_style = get_post_meta( get_the_ID(), 'qurio_connect_campaign_style', true );
 
-    if ( is_singular() && $qurio_connect_campaign_style === "inline" ) {
-        
-        // Split the content into paragraphs
-        $paragraphs = explode( '</p>', $content );
-        
-        // Check if there are at least two paragraphs
-        if ( count( $paragraphs ) > 2 ) {
-            // Insert shortcode after the second paragraph
-            $shortcode = '[qurio_embed_campaign]';
-            $paragraphs[1] .= $shortcode;
-            
-            // Recombine the paragraphs into the content
-            $content = implode( '</p>', $paragraphs );
-        } else {
 
-            $content .= '[qurio_embed_campaign]';
-          
-        }
-        
-        // If the content is empty, directly append the shortcode
-        if ( empty( $content ) ) {
-            $content = '[qurio_embed_campaign]';
-        }
-    }
+
+
+
     
-    return $content;
-}
+
 
 public function get_qurio_campaign_form(){
-    global $post;
-    $output ='';
+          global $post;
+          $output ='';
             $current_post_id = is_singular() ? get_the_ID() : ( isset($post->ID) ? $post->ID : '' );
             $qurio_connect_campaign_id = sanitize_text_field(get_post_meta( $current_post_id, 'get_qurio_campaign_id', true ));
             $qurio_connect_campaign_style = sanitize_text_field(get_post_meta( $current_post_id, 'qurio_connect_campaign_style', true ));
             if(!$qurio_connect_campaign_style) {
             $qurio_connect_campaign_style = 'inline';
             }
-            $qurio_popup_delay_time = 0; //intval(get_post_meta($current_post_id, 'qurio_popup_delay_time', true));
+            $qurio_popup_delay_time = intval(get_post_meta($current_post_id, 'qurio_popup_delay_time', true));
             $style_css = '';
             if(!empty($qurio_popup_delay_time)){
                 $style_css = 'display:none;';
             }
+           $serialized_appearance = get_post_meta($current_post_id, 'qurio_campaign_appearance', true);
+           $appearance = maybe_unserialize($serialized_appearance);   //get the post data on key
+           $overlay = isset($appearance['overlay']) ? $appearance['overlay'] : '#000000';
+           $overlay_opacity = isset($appearance['overlayOpacity']) ? $appearance['overlayOpacity'] : 50;
+           list($r, $g, $b) = sscanf($overlay, "#%02x%02x%02x");
+
+           $style_css .= "background-color: rgba($r, $g, $b, " . ($overlay_opacity / 100) . ");";
+    
             if (get_post_type($current_post_id) == 'post') {
+               
             if (!empty($qurio_connect_campaign_id) && $qurio_connect_campaign_style == 'popup') {
             $iframe_src = GET_QURIO_APP_URL . '/preview-wp?campaignId=' . $qurio_connect_campaign_id;
-            $output.= "<div class='ctt_box'>
-            <a class='ctt_box_button' href='#popup1'></a>
-            </div>
-            <div id='popup1' class='ctt_overlay' style= ".$style_css." >
+            $output.= "
+            <div id='popup1' class='ctt_overlay' style= '" .$style_css. "' >
             <div class='ctt_popup'>
             <a class='close' href='javascript:void(0)'>&times;</a>
             <div class='ctt_pop_content'>
@@ -191,43 +172,56 @@ public function get_qurio_campaign_form(){
                
             var delay_time = " . ($qurio_popup_delay_time * 1000) . ";
             setTimeout(function() {
-                jQuery('.ctt_overlay').css('display','block');
+                jQuery('.ctt_overlay').show();
             }, delay_time);
             });
           </script>"; 
-            }else{
-            $output.= "Campaign id not found";
             }
             }
             echo $output;
     }
 
 
-    // public function get_qurio_campaign_form_inline_style(){
-    //     global $post;
-    //     $output ='';
-    //             $current_post_id = is_singular() ? get_the_ID() : ( isset($post->ID) ? $post->ID : '' );
-    //             $qurio_connect_campaign_id = sanitize_text_field(get_post_meta( $current_post_id, 'get_qurio_campaign_id', true ));
-    //             $qurio_connect_campaign_style = sanitize_text_field(get_post_meta( $current_post_id, 'qurio_connect_campaign_style', true ));
     
-    //             if(!$qurio_connect_campaign_style) {
-    //             $qurio_connect_campaign_style = 'inline';
-    //             }
-              
-    //             if (get_post_type($current_post_id) == 'post') {
-    //             if (!empty($qurio_connect_campaign_id) && $qurio_connect_campaign_style == 'inline') {
-    //             $iframe_src = GET_QURIO_APP_URL . '/preview-wp?campaignId=' . $qurio_connect_campaign_id;
-               
-    //             $output = "<div class='ctt_pop_content'>
-    //             <iframe src=\"" . esc_url($iframe_src) . "\" width=\"600\" height=\"400\" frameborder=\"0\" style='width: 100%; Max-width: 100%;'></iframe>
-    //             </div>
-    //             <div class='custom_iframe_url'><div>";
-               
-    //             }
-    //             echo $output;
-    //     }
-    // }
+    public function get_qurio_campaign_form_inline_style() {
+        global $post;
+        $current_post_id = is_singular() ? get_the_ID() : (isset($post->ID) ? $post->ID : '');
+        $qurio_connect_campaign_id = sanitize_text_field(get_post_meta($current_post_id, 'get_qurio_campaign_id', true));
+        $qurio_connect_campaign_style = sanitize_text_field(get_post_meta($current_post_id, 'qurio_connect_campaign_style', true));
     
+        if (!$qurio_connect_campaign_style) {
+            $qurio_connect_campaign_style = 'inline';
+        }
+
+        if (has_shortcode($post->post_content, 'qurio_embed_campaign')) {
+            return '';
+        }
+
+        if (get_post_type($current_post_id) == 'post') {
+            if (!empty($qurio_connect_campaign_id) && $qurio_connect_campaign_style == 'inline') {
+                $iframe_src = GET_QURIO_APP_URL . '/preview-wp?campaignId=' . $qurio_connect_campaign_id;
+                $output = "<div id='inline_form_show'><div class='ctt_pop_content'>
+                               <iframe src=\"" . esc_url($iframe_src) . "\" width=\"600\" height=\"400\" frameborder=\"0\" style='width: 100%; max-width: 100%;'></iframe>
+                           </div>
+                           <div class='custom_iframe_url'></div></div>";
+                return $output;
+            }
+        }
+        //return '';
+    }
+
+ 
+public function insert_qurio_campaign_form($content) {
+    if (is_singular('post')) {
+        $campaign_form = $this->get_qurio_campaign_form_inline_style();
+        if ($campaign_form) {
+            $pattern = '/(<\/p>.*?<\/p>)/s';
+            $replacement = '$1' . $campaign_form;
+            $content = preg_replace($pattern, $replacement, $content, 1);
+        }
+    }
+    return $content;
+}
 
     
 }
