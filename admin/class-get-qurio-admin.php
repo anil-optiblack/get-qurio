@@ -293,11 +293,11 @@ class Get_Qurio_Admin {
             <div class="">
                 <p>Qurio Engagements Widgets has 3 display options for your Wordpress website.</p>
                 <ol>
-                    <li><strong>Inline. </strong>The inline widget will natively appear inside the article after the 2nd paragraph.You can set a custom widget position with the shortcode shown below. Just add it to the post where you would like to see the widget.<br>
+                    <li><strong>Inline. </strong>The inline widget will natively appear inside the article after the 2nd paragraph. You can set a custom widget position with the shortcode shown below. Just add it to the post where you would like to see the widget.<br>
                         <input type="text" readonly disabled id="qurio_shortcode_field" value="[qurio_embed_campaign]">
                         <button type="button" id="qurio_shortcode_copy">Copy Shortcode</button></li>
-                    <li><strong>Popup. </strong>Popup widgets show automatically on page load after a certain delay.To configure the delay, go to the Appearances page in your Qurio account.</li>
-                    <li><strong>Standalone. </strong>Every campaign has a unique Standalone URL.You can link it directly with your posts, emails, or social media.</li>
+                    <li><strong>Popup. </strong>Popup widgets show automatically on page load after a certain delay. To configure the delay, go to the Appearances page in your Qurio account.</li>
+                    <li><strong>Standalone. </strong>Every campaign has a unique Standalone URL. You can link it directly with your posts, emails, or social media.</li>
                 </ol>
             </div>
         </div>
